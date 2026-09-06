@@ -77,7 +77,14 @@ router.post('/verify', requireAuth, (req, res) => {
     'UPDATE payments SET status = ?, razorpay_payment_id = ?, razorpay_signature = ? WHERE razorpay_order_id = ?'
   ).run('paid', razorpay_payment_id, razorpay_signature, razorpay_order_id);
 
-  db.prepare('UPDATE users SET plan = ? WHERE id = ?').run(payment.plan, req.userId);
+  const expiryDate = new Date();
+  expiryDate.setDate(expiryDate.getDate() + 30); // 30-day subscription period, renews on next payment
+
+  db.prepare('UPDATE users SET plan = ?, plan_expiry = ? WHERE id = ?').run(
+    payment.plan,
+    expiryDate.toISOString(),
+    req.userId
+  );
 
   res.json({ success: true, plan: payment.plan });
 });
