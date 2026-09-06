@@ -13,6 +13,7 @@ db.exec(`
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     phone TEXT,
+    address TEXT,
     website TEXT,
     plan TEXT DEFAULT 'none',
     created_at TEXT DEFAULT (datetime('now'))
@@ -40,5 +41,18 @@ db.exec(`
     created_at TEXT DEFAULT (datetime('now'))
   );
 `);
+
+// Safe migration: adds new columns if this database already existed
+// before these fields were introduced (won't error out if already there).
+try {
+  db.exec('ALTER TABLE users ADD COLUMN address TEXT');
+} catch (err) {
+  // Column already exists — nothing to do.
+}
+try {
+  db.exec('ALTER TABLE users ADD COLUMN plan_expiry TEXT');
+} catch (err) {
+  // Column already exists — nothing to do.
+}
 
 module.exports = db;
