@@ -13,8 +13,8 @@ const razorpay = new Razorpay({
 
 // Plan prices in INR (paise = amount * 100 for Razorpay)
 const PLAN_PRICES = {
-  starter: 25000,
-  growth: 55000,
+  starter: 5000,
+  growth: 10000,
   // enterprise is "custom" — handle separately via manual quote, not this endpoint
 };
 
